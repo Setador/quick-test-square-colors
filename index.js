@@ -1,29 +1,36 @@
 const drawContainer = (containerSize, childSize, numberOfChildren) => {
+    // Create the main container element
     const container = document.getElementById('mainSquare');
     container.style.width = `${containerSize}px`;
     container.style.height = `${containerSize}px`;
-    container.style.position = 'relative';
-    container.style.overflow = 'hidden';
+    container.style.position = 'relative'; // Position relative for child positioning
+    container.style.overflow = 'hidden'; // Hide scrollbars if children exceed container
 
+    // Calculate the maximum number of children that can fit
     const maxColumns = Math.floor(containerSize / childSize);
     const maxRows = Math.floor(containerSize / childSize);
     const maxChildren = maxColumns * maxRows;
     
+    // Calculate the actual number of children to create
     const actualNumberOfChildren = Math.min(numberOfChildren, maxChildren);
 
+     // Function to generate a random color for children's background
     const getRandomColor = () => {
         return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
     };
 
+     // Array to store child elements
     const children = [];
     let childCount = 0;
 
+    // Create child elements and add them to the container
     for (let row = 0; row < maxRows; row++) {
         for (let column = 0; column < maxColumns; column++) {
             if (childCount >= actualNumberOfChildren) {
-                break;
+                break; // Stop creating children if we reach the specified number
             }
 
+            // Create a child element
             const child = document.createElement('div');
             child.style.width = `${childSize}px`;
             child.style.height = `${childSize}px`;
@@ -32,6 +39,7 @@ const drawContainer = (containerSize, childSize, numberOfChildren) => {
             child.style.left = `${column * childSize}px`;
             child.style.top = `${row * childSize}px`;
 
+            // Event listener for hover effects (changing background and disappearance)
             child.addEventListener('mouseenter', () => {
                 child.style.backgroundColor = getRandomColor();
                 const hoverTimeout = setTimeout(() => {
@@ -44,17 +52,19 @@ const drawContainer = (containerSize, childSize, numberOfChildren) => {
                 });
             });
 
+            // Add the child to the container and the array of children
             container.appendChild(child);
             children.push(child);
             childCount++;
         }
     }
 
+    // If not all children fit, display a message as an alert
     if (actualNumberOfChildren < numberOfChildren) {
-        // Display the message as an alert
         alert(`Container can fit ${actualNumberOfChildren} out of ${numberOfChildren} children.`);
     }
 
+    // Append the container to the document body
     document.body.appendChild(container);
 };
 
