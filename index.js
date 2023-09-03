@@ -6,15 +6,17 @@ const drawContainer = (containerSize, childSize, numberOfChildren) => {
     container.style.position = 'relative'; // Position relative for child positioning
     container.style.overflow = 'hidden'; // Hide scrollbars if children exceed container
 
-    // Calculate the maximum number of children that can fit
+    // Calculate the maximum number of children that can fit in both dimensions
     const maxColumns = Math.floor(containerSize / childSize);
     const maxRows = Math.floor(containerSize / childSize);
-    const maxChildren = maxColumns * maxRows;
-    
-    // Calculate the actual number of children to create
-    const actualNumberOfChildren = Math.min(numberOfChildren, maxChildren);
 
-     // Function to generate a random color for children's background
+    // Ensure a square layout by taking the minimum of maxColumns and maxRows
+    const squareLayoutSize = Math.min(maxColumns, maxRows);
+
+    // Calculate the actual number of children to create
+    const actualNumberOfChildren = Math.min(numberOfChildren, squareLayoutSize * squareLayoutSize);
+
+    // Function to generate a random color for children's background
     const getRandomColor = () => {
         const letters = '0123456789ABCDEF';
         let color = '#';
@@ -24,13 +26,13 @@ const drawContainer = (containerSize, childSize, numberOfChildren) => {
         return color;
     };
 
-     // Array to store child elements
+    // Array to store child elements
     const children = [];
     let childCount = 0;
 
     // Create child elements and add them to the container
-    for (let row = 0; row < maxRows; row++) {
-        for (let column = 0; column < maxColumns; column++) {
+    for (let row = 0; row < squareLayoutSize; row++) {
+        for (let column = 0; column < squareLayoutSize; column++) {
             if (childCount >= actualNumberOfChildren) {
                 break; // Stop creating children if we reach the specified number
             }
@@ -48,16 +50,13 @@ const drawContainer = (containerSize, childSize, numberOfChildren) => {
             child.addEventListener('mouseenter', () => {
                 child.style.backgroundColor = getRandomColor();
                 const hoverTimeout = setTimeout(() => {
-                    child.style.opacity = '0'; // Hide using opacity
+                    child.style.backgroundColor = 'transparent'; // Hide using opacity
                 }, 2000);
 
                 child.addEventListener('mouseleave', () => {
                     clearTimeout(hoverTimeout);
-                    child.style.opacity = '1'; // Show using opacity
                 });
             });
-
-            // Add the child to the container and the array of children
             container.appendChild(child);
             children.push(child);
             childCount++;
